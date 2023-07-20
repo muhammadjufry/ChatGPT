@@ -7,6 +7,7 @@ sdk: docker
 sdk_version: 1.24.0  
 app_file: run.py  
 pinned: true  
+app_port: 1338
 ---
 
 # FreeGPT WebUI 
