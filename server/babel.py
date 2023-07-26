@@ -1,4 +1,5 @@
 import os
+import stat
 import subprocess
 from flask import request, session, jsonify
 from flask_babel import Babel
@@ -34,15 +35,21 @@ def get_languages():
     return jsonify(BABEL_LANGUAGES)
 
 
-def compile_translations():
-    """Compile the translation files."""
-    result = subprocess.run(
-        ['pybabel', 'compile', '-d', 'translations'],
-        stdout=subprocess.PIPE,
-    )
-
-    if result.returncode != 0:
-        raise Exception(
-            f'Compiling translations failed:\n{result.stdout.decode()}')
-
-    print('Translations compiled successfully')
+def compile_translations():  
+    """Compile the translation files."""  
+      
+    for root, dirs, files in os.walk('translations'):  
+        os.chmod(root, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  
+        for d in dirs:  
+            os.chmod(os.path.join(root, d), stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  
+  
+    result = subprocess.run(  
+        ['pybabel', 'compile', '-d', 'translations'],  
+        stdout=subprocess.PIPE,  
+    )  
+  
+    if result.returncode != 0:  
+        raise Exception(  
+            f'Compiling translations failed:\n{result.stdout.decode()}')  
+  
+    print('Translations compiled successfully')  
